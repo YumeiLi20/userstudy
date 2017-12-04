@@ -47,26 +47,28 @@ var current_privacy = 100;
  *      9:hidden data
  *      }
  */
+
 var total_char=0;
-// console.log(experimentr.data()["section2"][0][0][1][1]); this is pair 1, row 2, column 1 which is 1000142704
+// console.log(experimentr.data()["section2"][0][0][1][1]); //this is pair 1, row 2, column 1 which is 1000142704
 // calculate total number of characters on a page
 // coloumn 1,2,3 6,7,8 are the ones with information needed
-// // There are 5 column
-// for(var m=0;m<6;m++){
-//     for(var i=0;i<9;i++){
-//         if(i!=0&&i!=2&&i!=5) {
-//             var line_1 = experimentr.data()["section2"][0][m][0][i];
-//             var line_2 = experimentr.data()["section2"][0][m][1][i];
-//
-//
-//             // console.log(line_1.length);
-//             // console.log(line_2);
-//             // console.log(line_2.length);
-//             total_char = total_char+line_1.length+line_2.length;
-//         }
-//     }
-// }
-total_char = 343;//the number is 377
+// There are 5 column
+for(var m=0;m<6;m++){
+    for(var i=0;i<9;i++){
+        if(i!=0&&i!=2&&i!=5) {
+            var line_1 = experimentr.data()["section2"][0][m][0][i];
+            var line_2 = experimentr.data()["section2"][0][m][1][i];
+
+
+            // console.log(line_1.length);
+            // console.log(line_2);
+            // console.log(line_2.length);
+            total_char = total_char+line_1.length+line_2.length;
+        }
+    }
+}
+console.log(total_char,"total char is");
+total_char = total_char - 22;//the number is 377
 console.log("total number of characters is : ",total_char);
 var char_disclosed = 0;
 
@@ -104,15 +106,17 @@ function findInJason(json_cont){
 }
 
 //findInJason(json_content);
+
 var current_progress_1;
 function changeBar(total_char, char_disclosed) {
     var current_progress_1;
     current_progress_1 = char_disclosed/total_char*100;
-    $("#preCal")
+    $("#sum")
         .css("width", current_progress_1 + "%")
         .attr("aria-valuenow", current_progress_1).css("vertical-align","middle");
-    $("#progress_value")
-        .text(char_disclosed + "\n"+"("+current_progress_1.toFixed(1) + "%) ").css("font-size", "350%").css("color", "black").css("transform"," translateY(22%)") ;
+    $("#real_progress_value")
+        .text(char_disclosed + " of "+total_char+ " ("+current_progress_1.toFixed(1) + "%) ").css("font-size", "150%").css("color", "black").css("transform"," translateY(25%)").css("transform"," translateX(-5%)") ;
+
     experimentr.data()["current_progress"] = current_progress_1;
     return current_progress_1;
 };
@@ -124,24 +128,37 @@ function preCalculatedPercentageBar(total_char, char_disclosed) {
     $("#dynamic")
         .css("width", new_progress_1 + "%")
         .attr("aria-valuenow", new_progress_1).css("vertical-align","middle");
-    $("#progress_value")
-        .text(char_disclosed + "\n"+"(" + new_progress_1.toFixed(1) + "%) ").css("font-size", "350%").css("color", "black").css("transform"," translateY(22%)") ;
+    $("#dynamic_privacy")
+        .css("width", new_progress_1 + "%")
+        .attr("aria-valuenow", new_progress_1).css("vertical-align","middle");
+    $("#potential_privacy")
+        .text( "Potential Change:"+new_progress_1.toFixed(1)).append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+        ""+"Potential Change:"+new_progress_1.toFixed(1)).css("font-size", "100%").css("color", "#f0ad4e").css("transform"," translateY(60%)").css("transform"," translateX(5%)") ;
+        // .text("potential change is:" + char_disclosed + "\n"+"(" + new_progress_1.toFixed(1) + "%) ").css("font-size", "100%").css("color", "red").css("transform"," translateY(22%)") ;
+    $("#change_value")
+        .text( "Percent of Characters Disclosed").append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+        ""+"Privacy Budget Used").css("font-size", "115%").css("color", "black").css("transform"," translateY(60%)").css("transform"," translateX(6%)") ;
+
 };
 
 
 function changePrivacy(current_privacy,deltaK) {
     //console.log("current privacy is", current_privacy);
-    $("#dynamic_privacy")
-        .css("width", current_privacy + "%")
-        .attr("aria-valuenow", current_privacy).css("vertical-align","middle");
+    $("#sum_privacy")
+        .css("width", 100-current_privacy + "%")
+        .attr("aria-valuenow", 100-current_privacy).css("vertical-align","middle");
     $("#progress_value_privacy")
-        .text(""+current_privacy.toFixed(1) + "% ").css("font-size", "350%").css("color", "black").css("transform"," translateY(22%)") ;
+        // .text(""+current_privacy.toFixed(1) + "% ").css("font-size", "100%").css("color", "black").css("transform"," translateY(22%)") ;
+        .text(""+(100-current_privacy).toFixed(0) + " of 100 "+"("+(100-current_privacy).toFixed(1) + "%)").css("font-size", "150%").css("color", "black").css("transform"," translateY(22%)").css("transform"," translateX(-5%)") ;
     experimentr.data()["current_privacy"] = current_privacy;
 
 };
 
 var swap_count=0;
-function cell(t,g,j,k, mode){
+function cell(t,g,j,k, mode)
+{
     // console.log(t);
 
 
@@ -162,6 +179,7 @@ function cell(t,g,j,k, mode){
     // }
     // erase title columns
     changeBar(total_char, char_disclosed);
+    preCalculatedPercentageBar(total_char, 0);
     changePrivacy(current_privacy, privacy_score_decrement);
     //changePrivacy(current_privacy, privacy_score_decrement_sib);
    // console.log("clickable.js in the working");
@@ -174,7 +192,13 @@ function cell(t,g,j,k, mode){
 
     var cel = g.append("g").attr("id","c"+j.toString()).attr("class","cell").attr("data-mode",mode)
         .attr("transform","translate("+x+","+y+")").on('click',function() {
-            if(experimentr.data()["clickable"] == "true") {
+
+           //clickfunctionstart
+           //  experimentr.data()["current_cel"] = d3.select(this);
+           //  var bg = div
+
+            if(experimentr.data()["clickable"] == "true" && cel.attr("missing") != "true") {
+
                 // console.log(d3.select(this).attr("id"));
                 // console.log(d3.select(this.parentNode).attr("id"));
                 var cell_question_number = d3.select(this).attr("id");//findId
@@ -203,16 +227,16 @@ function cell(t,g,j,k, mode){
 
                 var original_text;
                 var original_text_sibling;
+                var pageNumber = parseInt(experimentr.data()["current_question_page"] - 1);
                 if(question_number<20){
-
-                   original_text = experimentr.data()["section2"][0][pair_num ][0][question_number-10];
-                   original_text_sibling = experimentr.data()["section2"][0][pair_num ][1][question_number-10];
+                   original_text = experimentr.data()["section2"][pageNumber][pair_num%6][0][question_number-10];
+                   original_text_sibling = experimentr.data()["section2"][pageNumber][pair_num%6][1][question_number-10];
                     //console.log(original_text);
 
                 }
                 else if(question_number >20){
-                    original_text = experimentr.data()["section2"][0][pair_num ][1][question_number-20];
-                    original_text_sibling = experimentr.data()["section2"][0][pair_num ][0][question_number-20];
+                    original_text = experimentr.data()["section2"][pageNumber][pair_num%6][1][question_number-20];
+                    original_text_sibling = experimentr.data()["section2"][pageNumber][pair_num%6][0][question_number-20];
                     //console.log(original_text);
 
                 }
@@ -278,7 +302,7 @@ function cell(t,g,j,k, mode){
                         char_difference = 8;
                     }
                     else{
-                        char_difference = 0;
+                        char_difference = char_difference;
                     }
                 }
 
@@ -410,7 +434,7 @@ function cell(t,g,j,k, mode){
                         "I:5678412359#L:SWANSON#D:05/16/1961#R:B": 1,
                         "I:6456839076#F:ERNESTO#L:PEDROZA JR#D:07/23/1997#S:M#R:O": 1,
                         "I:4897541253#L:SWANSON#S:M#R:B": 1,
-                        "S:M#R:B": 2,
+                        "S:M#R:B": 4,
                         "F:EMMA#L:BRIGGS#D:12/29/1987#S:F": 1,
                         "D:07/23/1997#S:M": 1,
                         "F:RUFORD#D:05/16/1916#S:M": 1,
@@ -465,7 +489,7 @@ function cell(t,g,j,k, mode){
                         "F:ALEXANDRA#D:05/04/1994#S:F": 1,
                         "L:PEDROZA SR#S:M": 1,
                         "F:EMMA#R:W": 2,
-                        "S:M": 5,
+                        "S:M": 7,
                         "F:RUFORD#L:SWANSON": 2,
                         "S:F": 7,
                         "I:1299747019#F:ERNESTO#S:M": 1,
@@ -477,7 +501,7 @@ function cell(t,g,j,k, mode){
                         "I:1856554310#L:OMONDI#D:09/29/1978": 1,
                         "I:1742668281#F:SARA#L:STYLES-BOONE#R:W": 1,
                         "I:1777743279#L:BROST": 1,
-                        "R:B": 2,
+                        "R:B": 4,
                         "I:1777743279#D:05/04/1994#R:W": 1,
                         "R:O": 2,
                         "I:9320952205#F:EMMA#L:DEYTON#S:F": 1,
@@ -978,7 +1002,99 @@ function cell(t,g,j,k, mode){
                         "F:ERNESTO#L:PEDROZA SR#D:04/19/1964#S:M": 1,
                         "I:6456839076#F:ERNESTO#R:O": 1,
                         "F:RUFORD#D:05/16/1961": 1,
-                        "F:ERNESTO#L:PEDROZA JR#D:07/23/1997#S:M": 1
+                        "F:ERNESTO#L:PEDROZA JR#D:07/23/1997#S:M": 1,
+                        //new row
+                        "I:1000172572":1,
+                        "I:1000173572":1,
+                        "I:1000172572#F:FURNESS":1,
+                        "I:1000172572#F:FURNESS#R:B":1,
+                        "I:1000172572#F:FURNESS#L:ARMSTEAD":1,
+                        "I:1000172572#F:FURNESS#L:ARMSTEAD#R:B":1,
+                        "I:1000172572#L:ARMSTEAD":1,
+                        "I:1000172572#L:ARMSTEAD#R:B":1,
+                        "I:1000172572#F:FURNESS#L:ARMSTEAD#D:09/25/1922":1,
+                        "I:1000172572#F:FURNESS#L:ARMSTEAD#D:09/25/1922#R:B":1,
+                        "I:1000172572#L:ARMSTEAD#D:09/25/1922":1,
+                        "I:1000172572#L:ARMSTEAD#D:09/25/1922#R:B":1,
+                        "I:1000172572#F:FURNESS#D:09/25/1922":1,
+                        "I:1000172572#F:FURNESS#D:09/25/1922#R:B":1,
+                        "I:1000172572#F:FURNESS#L:ARMSTEAD#D:09/25/1922#S:M":1,
+                        "I:1000172572#L:ARMSTEAD#D:09/25/1922#S:M":1,
+                        "I:1000172572#L:ARMSTEAD#D:09/25/1922#S:M#R:B":1,
+                        "I:1000172572#F:FURNESS#D:09/25/1922#S:M":1,
+                        "I:1000172572#F:FURNESS#D:09/25/1922#S:M#R:B":1,
+                        "I:1000172572#F:FURNESS#L:ARMSTEAD#S:M":1,
+                        "I:1000172572#F:FURNESS#L:ARMSTEAD#S:M#R:B":1,
+                        "I:1000172572#D:09/25/1922#S:M":1,
+                        "I:1000172572#D:09/25/1922#S:M#R:B":1,
+                        "I:1000172572#F:FURNESS#S:M":1,
+                        "I:1000172572#F:FURNESS#S:M#R:B":1,
+                        "I:1000172572#L:ARMSTEAD#S:M":1,
+                        "I:1000172572#L:ARMSTEAD#S:M#R:B":1,
+                        "I:1000172572#S:M":1,
+                        "I:1000172572#S:M#R:B":1,
+                        "I:1000172572#F:FURNESS#L:ARMSTEAD#D:09/25/1922#S:M#R:B":1,
+
+                        "I:1000173572#F:FURNESS":1,
+                        "I:1000173572#F:FURNESS#R:B":1,
+                        "I:1000173572#F:FURNESS#L:ARMSTEAD":1,
+                        "I:1000173572#F:FURNESS#L:ARMSTEAD#R:B":1,
+                        "I:1000173572#L:ARMSTEAD":1,
+                        "I:1000173572#L:ARMSTEAD#R:B":1,
+                        "I:1000173572#F:FURNESS#L:ARMSTEAD#D:09/25/1922":1,
+                        "I:1000173572#F:FURNESS#L:ARMSTEAD#D:09/25/1922#R:B":1,
+                        "I:1000173572#L:ARMSTEAD#D:09/25/1922":1,
+                        "I:1000173572#L:ARMSTEAD#D:09/25/1922#R:B":1,
+                        "I:1000173572#F:FURNESS#D:09/25/1922":1,
+                        "I:1000173572#F:FURNESS#D:09/25/1922#R:B":1,
+                        "I:1000173572#F:FURNESS#L:ARMSTEAD#D:09/25/1922#S:M":1,
+                        "I:1000173572#L:ARMSTEAD#D:09/25/1922#S:M":1,
+                        "I:1000173572#L:ARMSTEAD#D:09/25/1922#S:M#R:B":1,
+                        "I:1000173572#F:FURNESS#D:09/25/1922#S:M":1,
+                        "I:1000173572#F:FURNESS#D:09/25/1922#S:M#R:B":1,
+                        "I:1000173572#F:FURNESS#L:ARMSTEAD#S:M":1,
+                        "I:1000173572#F:FURNESS#L:ARMSTEAD#S:M#R:B":1,
+                        "I:1000173572#D:09/25/1922#S:M":1,
+                        "I:1000173572#D:09/25/1922#S:M#R:B":1,
+                        "I:1000173572#F:FURNESS#S:M":1,
+                        "I:1000173572#F:FURNESS#S:M#R:B":1,
+                        "I:1000173572#L:ARMSTEAD#S:M":1,
+                        "I:1000173572#L:ARMSTEAD#S:M#R:B":1,
+                        "I:1000173572#S:M":1,
+                        "I:1000173572#S:M#R:B":1,
+                        "I:1000173572#F:FURNESS#L:ARMSTEAD#D:09/25/1922#S:M#R:B":1,
+
+
+                        "F:FURNESS":2,
+                        "F:FURNESS#L:ARMSTEAD":2,
+                        "F:FURNESS#L:ARMSTEAD#D:09/25/1922":2,
+                        "F:FURNESS#D:09/25/1922":2,
+                        "F:FURNESS#L:ARMSTEAD#D:09/25/1922#S:M":2,
+                        "F:FURNESS#S:M":2,
+                        "F:FURNESS#L:ARMSTEAD#S:M":2,
+                        "F:FURNESS#D:09/25/1922#S:M":2,
+                        "F:FURNESS#L:ARMSTEAD#D:09/25/1922#S:M#R:B":2,
+                        "F:FURNESS#D:09/25/1922#S:M#R:B":2,
+                        "F:FURNESS#D:09/25/1922#R:B":2,
+                        "F:FURNESS#S:M#R:B":2,
+                        "F:FURNESS#R:B":2,
+
+
+                        "L:ARMSTEAD":2,
+                        "L:ARMSTEAD#D:09/25/1922":2,
+                        "L:ARMSTEAD#D:09/25/1922#S:M":2,
+                        "L:ARMSTEAD#S:M":2,
+                        "L:ARMSTEAD#D:09/25/1922#S:M#R:B":2,
+                        "L:ARMSTEAD#S:M#R:B":2,
+                        "L:ARMSTEAD#D:09/25/1922#R:B":2,
+                        "L:ARMSTEAD#R:B":2,
+
+                        "D:09/25/1922":2,
+                        "D:09/25/1922#S:M":2,
+                        "D:09/25/1922#S:M#R:B":2,
+                        "D:09/25/1922#R:B":2
+
+
                     };
                     var array_elements = ["#c11", "#c21", "#c13","#c23", "#c14","#c24","#c16", "#c26","#c17","#c27","#c18","#c28"];
                     key_value = "";
@@ -1106,13 +1222,14 @@ function cell(t,g,j,k, mode){
                             //console.log("current_id_number",current_id_num);
                             if(parseInt(question_number)<20 && current_id_num <20){
                                // console.log(parseInt(question_number));
-                        original_text = original_text + experimentr.data()["section2"][0][pair_num ][0][question_number-10];
-                        original_text_sibling = original_text_sibling + experimentr.data()["section2"][0][pair_num ][1][question_number-10];
+                                var pageNumber =  experimentr.data()["current_question_page"] -1;
+                                original_text = original_text + experimentr.data()["section2"][pageNumber][pair_num%6 ][0][question_number-10];
+                        original_text_sibling = original_text_sibling + experimentr.data()["section2"][pageNumber][pair_num %6][1][question_number-10];
                         }
                         else if(parseInt(question_number)>20&& current_id_num >20){
                                //console.log(parseInt(question_number));
-                            original_text = original_text + experimentr.data()["section2"][0][pair_num ][1][question_number-20];
-                            original_text_sibling = original_text_sibling + experimentr.data()["section2"][0][pair_num ][0][question_number-20];
+                            original_text = original_text + experimentr.data()["section2"][pageNumber][pair_num%6][1][question_number-20];
+                            original_text_sibling = original_text_sibling + experimentr.data()["section2"][pageNumber][pair_num%6][0][question_number-20];
                             }
                         else{
                             original_text="";
@@ -1285,64 +1402,94 @@ function cell(t,g,j,k, mode){
                             .select(otcell).remove();
                         d3.select(this).remove();
 
-
-                        if (((mode_list[mode_list.indexOf(current_mode) + 1] == "Opti1" && title[j % cwidth.length] == "ID") || title[j % cwidth.length] == "Sex") || title[j % cwidth.length] == "Race" || prev_text.trim() === "") {
+                        setTimeout(function(){   if (((mode_list[mode_list.indexOf(current_mode) + 1] == "Opti1" && title[j % cwidth.length] == "ID") || title[j % cwidth.length] == "Sex") || title[j % cwidth.length] == "Race" || prev_text.trim() === "") {
                             var next_mode = "Full";
                         } else {
                             var next_mode = mode_list[mode_list.indexOf(current_mode) + 1];
                         }
 
-                        if (next_mode == "Full") {
-                            mapping = [0, 9, 2, 3, 4, 5, 6, 7, 8, 1, 10, 11, 12, 7, 8, 15];
-                        } else {
-                            mapping = [0, 9, 2, 10, 11, 5, 12, 13, 14, 1, 3, 4, 6, 7, 8, 15];
-                        }
+                            if (next_mode == "Full") {
+                                mapping = [0, 9, 2, 3, 4, 5, 6, 7, 8, 1, 10, 11, 12, 7, 8, 15];
+                            } else {
+                                mapping = [0, 9, 2, 10, 11, 5, 12, 13, 14, 1, 3, 4, 6, 7, 8, 15];
+                            }
 
-                        // if(mode_list[mode_list.indexOf(current_mode) + 1] == "Opti1" && title[j%cwidth.length]=="DoB(M/D/Y)"){
-                        //     cell(dat[g.attr("id").slice(1) % 6][row_num][1], g, j, 3, next_mode);
-                        //     cell(dat[g.attr("id").slice(1) % 6][Math.abs(row_num-1)][1], g, j2, 3, next_mode);
-                        //     cell(dat[g.attr("id").slice(1) % 6][Math.abs(row_num-1)][9], g, j2+8, 3, next_mode);
-                        //     cell(dat[g.attr("id").slice(1) % 6][row_num][9], g, j+8, 3, next_mode);
-                        //
-                        // }
+                            // if(mode_list[mode_list.indexOf(current_mode) + 1] == "Opti1" && title[j%cwidth.length]=="DoB(M/D/Y)"){
+                            //     cell(dat[g.attr("id").slice(1) % 6][row_num][1], g, j, 3, next_mode);
+                            //     cell(dat[g.attr("id").slice(1) % 6][Math.abs(row_num-1)][1], g, j2, 3, next_mode);
+                            //     cell(dat[g.attr("id").slice(1) % 6][Math.abs(row_num-1)][9], g, j2+8, 3, next_mode);
+                            //     cell(dat[g.attr("id").slice(1) % 6][row_num][9], g, j+8, 3, next_mode);
+                            //
+                            // }
 
 
-                        if (next_mode == "Full" && title[j % cwidth.length] == "ID") {
-                            // console.log(dat[g.attr("id").slice(1) % 6][row_num][1]);
-                            // console.log(j);
-                            // console.log(dat[g.attr("id").slice(1) % 6][row_num][9]);
-                            // console.log(j+8);
-                            // console.log(dat[g.attr("id").slice(1) % 6][Math.abs(row_num-1)][1]);
-                            // console.log(j2);
-                            // console.log(dat[g.attr("id").slice(1) % 6][Math.abs(row_num-1)][9]);
-                            // console.log(j2+8);
-                            cell(dat[g.attr("id").slice(1) % 6][row_num][1], g, j, 3, next_mode);
-                            cell(dat[g.attr("id").slice(1) % 6][Math.abs(row_num - 1)][1], g, j2, 3, next_mode);
-                            cell(dat[g.attr("id").slice(1) % 6][Math.abs(row_num - 1)][9], g, j2 + 8, 3, next_mode);
-                            cell(dat[g.attr("id").slice(1) % 6][row_num][9], g, j + 8, 3, next_mode);
-                        } else {
-                            var next_text_1 = dat[g.attr("id").slice(1) % 6][row_num][mapping[j % cwidth.length]];
-                            var next_text_2 = dat[g.attr("id").slice(1) % 6][Math.abs(row_num - 1)][mapping[j % cwidth.length]];
+                            if (next_mode == "Full" && title[j % cwidth.length] == "ID") {
+                                // console.log(dat[g.attr("id").slice(1) % 6][row_num][1]);
+                                // console.log(j);
+                                // console.log(dat[g.attr("id").slice(1) % 6][row_num][9]);
+                                // console.log(j+8);
+                                // console.log(dat[g.attr("id").slice(1) % 6][Math.abs(row_num-1)][1]);
+                                // console.log(j2);
+                                // console.log(dat[g.attr("id").slice(1) % 6][Math.abs(row_num-1)][9]);
+                                // console.log(j2+8);
+                                cell(dat[g.attr("id").slice(1) % 6][row_num][1], g, j, 3, next_mode);
+                                cell(dat[g.attr("id").slice(1) % 6][Math.abs(row_num - 1)][1], g, j2, 3, next_mode);
+                                cell(dat[g.attr("id").slice(1) % 6][Math.abs(row_num - 1)][9], g, j2 + 8, 3, next_mode);
+                                cell(dat[g.attr("id").slice(1) % 6][row_num][9], g, j + 8, 3, next_mode);
+                            } else {
+                                var next_text_1 = dat[g.attr("id").slice(1) % 6][row_num][mapping[j % cwidth.length]];
+                                var next_text_2 = dat[g.attr("id").slice(1) % 6][Math.abs(row_num - 1)][mapping[j % cwidth.length]];
 
-                            cell(next_text_1, g, j, k, next_mode);
-                            cell(next_text_2, g, j2, k, next_mode);
-                        }
+                                cell(next_text_1, g, j, k, next_mode);
+                                cell(next_text_2, g, j2, k, next_mode);
+
+
+                            }},200);
+
 
                     }
+
                 }
+
                }
 
 
             }
-        });
+
+
+            });
+
+        // experimentr.data()["current_cel"].attr("opacity", 0.5);
+
+
     var randomNum;
     if(j > 10) {
         if((cel.attr("data-mode") == "Partial")||(cel.attr("data-mode") == "Partial_Cell")){
+
             cel.on("mouseover", function(d) {
-                console.log("haha");
-                randomNum = Math.floor((Math.random() * 10) + 40);
+                // var cell_question_number = d3.select(this).attr("id");//findId
+                // var question_number=cell_question_number.replace("c", " ");
+                // var cell_pair_number = d3.select(this.parentNode).attr("id");
+                // var pair_number = cell_pair_number.replace("g", " ");
+                // //console.log(question_number);
+                // var pair_num =parseInt(pair_number );
+                // // console.log(pair_number);
+                //
+                // var prev_text_id = parseInt(question_number);
+                // var sibling_id;
+                // if(prev_text_id<20){
+                //     sibling_id = "c"+(prev_text_id +10).toString();
+                // }
+                // else if(prev_text_id>20){
+                //     sibling_id = "c"+(prev_text_id -10).toString();
+                // }
+                // //console.log(sibling_id);
+                //
+                // console.log(d3.select(this).text());
+                // console.log(d3.select(this.parentNode).select("#"+sibling_id).text());
+
+                randomNum = Math.floor((Math.random() * 6) + 12);
                 preCalculatedPercentageBar(total_char,randomNum);
-                console.log(randomNum);
                 var selection = d3.select(this.parentNode);
                 var rect = this.getBBox();
                 var x_offset = 2; // enlarge rect box 2 px on left & right side
@@ -1354,19 +1501,12 @@ function cell(t,g,j,k, mode){
 
                 var is_swapped = false;
                 if(cel.attr("swap_detect")== "true"){
+
+
                     is_swapped = true;
                 }
-                // var cel_23 = g.append("g").attr("id","c23").attr("class","cell").attr("data-mode",mode)
-                //     .attr("transform","translate("+x+","+y+")");
-                //
-                // cel_23.attr("swap_detect",true);
-                // console.log(cel.attr("id") == "true");
-                // selection.classed("mute", (selection.classed("mute") ? false : true));
 
-                // console.log(x,rect.x);
-                //console.log(y, rect.y);
-
-                if(j>20){
+                if(j>20 && cel.attr("swap_detect") != "true"){
                     var pathinfo_deep = [
                         {x: x - 5, y: y + 25},
                         {x: x - 5 + w, y: y + 25},
@@ -1378,8 +1518,7 @@ function cell(t,g,j,k, mode){
                         {x: x - 5, y: y + 25}
                     ];
                 }
-                else if(cel.attr("swap_detect")== "true"){
-                    console.log("23 is true");
+                else if(cel.attr("swap_detect")== "true" && cel.attr("id") == "c13"){
                     var pathinfo_deep = [
                         {x: x - 5 + 2.5*w, y: y - 5},
                         {x: x - 5 + 2.5*w, y: y - 5 + 77},
@@ -1389,6 +1528,42 @@ function cell(t,g,j,k, mode){
                         {x: x - 5, y: y - 5 + 77},
                         {x: x - 5, y: y - 5},
                         {x: x - 5 + 2.5*w, y: y - 5}
+                    ];
+                }
+                else if(cel.attr("swap_detect")== "true" && cel.attr("id") == "c23"){
+                    var pathinfo_deep = [
+                        {x: x - 5 + 2.5*w, y: y - 5-47},
+                        {x: x - 5 + 2.5*w, y: y - 5 + 77-47},
+                        {x: x - 5, y: y - 5 + 77-47}
+                    ];
+                    var pathinfo_light = [
+                        {x: x - 5, y: y - 5 + 77-47},
+                        {x: x - 5, y: y - 5-47},
+                        {x: x - 5 + 2.5*w, y: y - 5-47}
+                    ];
+                }
+                else if(cel.attr("swap_detect")== "true" && cel.attr("id") == "c14"){
+                    var pathinfo_deep = [
+                        {x: x - 5 + 2.5*w - 193, y: y - 5},
+                        {x: x - 5 + 2.5*w - 193, y: y - 5 + 77},
+                        {x: x - 5 - 193, y: y - 5 + 77}
+                    ];
+                    var pathinfo_light = [
+                        {x: x - 5-193, y: y - 5 + 77},
+                        {x: x - 5-193, y: y - 5},
+                        {x: x - 5 + 2.5*w -193, y: y - 5}
+                    ];
+                }
+                else if(cel.attr("swap_detect")== "true" && cel.attr("id") == "c24"){
+                    var pathinfo_deep = [
+                        {x: x - 5 + 2.5*w - 193, y: y - 5 - 47},
+                        {x: x - 5 + 2.5*w - 193, y: y - 5 + 77 - 47},
+                        {x: x - 5 - 193, y: y - 5 + 77 - 47}
+                    ];
+                    var pathinfo_light = [
+                        {x: x - 5-193, y: y - 5 + 77 -47},
+                        {x: x - 5-193, y: y - 5 - 47},
+                        {x: x - 5 + 2.5*w-193, y: y - 5 -47}
                     ];
                 }
                 else {
@@ -1415,17 +1590,18 @@ function cell(t,g,j,k, mode){
                 selection.append("svg:path")
                     .attr("d", d3line(pathinfo_deep))
                     .style("stroke-width", 3)
-                    .style("stroke", "#d9534f")
+                    .style("stroke", "#f0ad4e")
                     .style("fill", "none")
                     .attr("class","highlight_rect");
                 selection.append("svg:path")
                     .attr("d", d3line(pathinfo_light))
                     .style("stroke-width", 3)
-                    .style("stroke", "#d9534f")
+                    .style("stroke", "#f0ad4e")
                     .style("fill", "none")
                     .attr("class","highlight_rect");
 
 
+                //for swaped name
                 //for swaped name
                 if(is_swapped == true) {
                     is_swapped = false;
@@ -1435,7 +1611,14 @@ function cell(t,g,j,k, mode){
 
 
 
-            d3.select(this).style("cursor", "pointer");
+
+                if(cel.attr("missing")== "true"){
+                    d3.selectAll(".highlight_rect").remove();
+                    preCalculatedPercentageBar(total_char,0);
+                }
+                else{
+                    d3.select(this).style("cursor", "pointer");
+                }
             });
 
             cel.on("mouseout", function(d){
@@ -1443,14 +1626,18 @@ function cell(t,g,j,k, mode){
                 preCalculatedPercentageBar(total_char,0);
                 d3.select(this).style("cursor", "default");
                 d3.selectAll(".highlight_rect").remove();
+
             });
         } else {
             cel.on({"mouseover": function(d) {
+                preCalculatedPercentageBar(total_char,0);
                 d3.select(this).style("cursor", "default");
             }});
 
             cel.on("mouseout", function(d){
+                preCalculatedPercentageBar(total_char,0);
                 d3.selectAll(".highlight_rect").remove();
+
             });
         }
     }
@@ -1591,6 +1778,7 @@ function cell(t,g,j,k, mode){
             if(fnj==lnm && fnm==lnj){
                 swap = 1;
                 if(j<2*cwidth.length && title[j%cwidth.length]=="First name"){
+                    console.log(2*cwidth.length,"2*cwidth.length is");
                     cel.append("svg:image").attr("xlink:href","/resources/name_swap.svg").attr("class","icon")
                         .attr("x",cwidth[j%cwidth.length]-45).attr("y",cy/2-8).attr("width",60).attr("height",60);
                     if(mode != "Full"){
@@ -1602,7 +1790,29 @@ function cell(t,g,j,k, mode){
                     }
 
 
+                    }
+                else if ( title[j%cwidth.length]=="First name"){
+                    if(mode != "Full"){
+                        cel.attr("swap_detect",true);
+                        cel.attr("id","c23");
+                    }
                 }
+                else if(j<2*cwidth.length && title[j%cwidth.length]=="Last name"){
+                    if(mode != "Full"){
+                        cel.attr("swap_detect",true);
+                        cel.attr("id","c14");
+                    }
+                }
+                else if(title[j%cwidth.length]=="Last name"){
+                    if(mode != "Full"){
+                        cel.attr("swap_detect",true);
+                        cel.attr("id","c24");
+                    }
+                }
+
+
+
+
 
                 if(["Vanilla","Full"].indexOf(mode)<0){
                     t = t.replace(/[A-Z0-9]/g, function(){if(j%14>9){return "&";}return "@";});
@@ -1614,6 +1824,7 @@ function cell(t,g,j,k, mode){
         if(textbox.text()==""){
             if(title[j%cwidth.length]!="FFreq" && title[j%cwidth.length]!="LFreq"){
                 // missing
+                cel.attr("missing","true");
                 cel.append("svg:image").attr("xlink:href","/resources/missing.png").attr("class","icon")
                     .attr("x",function(){
                         if(title[j%cwidth.length]=="ID"){return 36;}
@@ -1632,7 +1843,7 @@ function cell(t,g,j,k, mode){
         else if(textbox.text()==" " && title[j%cwidth.length]!="ID." && title[j%cwidth.length]!="Pair"){
             // double check mark
             cel.append("svg:image").attr("xlink:href","/resources/checkmark.png").attr("class","icon")
-                .attr("x",function(){if(title[j%cwidth.length]=="First name"||title[j%cwidth.length]=="Last name"){return 0;}
+                .attr("x",function(){if(title[j%cwidth.length]=="First name"||title[j%cwidth.length]=="Last name"){return 10;}
                 else if(title[j%cwidth.length]=="ID"){return 35;}
                 else if(title[j%cwidth.length]!="DoB(M/D/Y)"){return cwidth[j%cwidth.length]/3;}
                     return 40;})
